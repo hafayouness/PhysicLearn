@@ -117,35 +117,41 @@ Structure Frontend :
 
 frontend/
 ├── app/
-│ ├── login.js
-│ ├── register.js
-│ ├── home.js
-│ ├── courses.js
-│ ├── lessons.js
-│ ├── quiz.js
-│ └── profile.js
+│ ├── \_layout.tsx # Layout global (SafeArea + React Query + Stack)
+│ ├── (auth)/ # Routes publiques
+│ │ ├── \_layout.tsx # Layout auth (si besoin)
+│ │ ├── login.tsx
+│ │ └── register.tsx
+│ ├── (app)/ # Routes protégées
+│ │ ├── \_layout.tsx # Auth guard ici
+│ │ ├── home.tsx
+│ │ ├── courses.tsx
+│ │ ├── lessons.tsx
+│ │ ├── quiz.tsx
+│ │ └── profile.tsx
+│ └── +not-found.tsx # Page 404
 ├── components/
-│ ├── CourseCard.js
-│ ├── LessonCard.js
-│ └── QuizCard.js
+│ ├── CourseCard.tsx
+│ ├── LessonCard.tsx
+│ └── QuizCard.tsx
 ├── services/
-│ ├── api.js
-│ ├── authService.js
-│ └── courseService.js
+│ ├── api.js # Axios + Interceptor JWT
+│ ├── authService.ts # Auth API calls
+│ └── courseService.ts # Courses API calls
 ├── store/
-│ ├── authStore.js
-│ ├── courseStore.js
-│ └── progressStore.js
+│ ├── authStore.ts # Zustand auth
+│ ├── courseStore.ts # Zustand courses
+│ └── progressStore.ts # Zustand progress
 ├── hooks/
-│ ├── useCourses.js
-│ └── useAuth.js
+│ ├── useCourses.ts # React Query hooks
+│ └── useAuth.ts # React Query hooks
 ├── types/
-│ ├── user.js
-│ ├── course.js
-│ └── quiz.js
+│ ├── user.ts
+│ ├── course.ts
+│ └── quiz.ts
 ├── utils/
-│ └── constants.js
-└── app.json
+│ └── constants.ts
+└── app.json # Expo + deep linking config
 
 💾 Modèle de Données Minimum
 
