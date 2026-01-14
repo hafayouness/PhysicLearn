@@ -48,3 +48,16 @@ export const authorize = (...roles) => {
     next();
   };
 };
+export const authorizeAdminOrSelf = (req, res, next) => {
+  const userIdFromToken = req.user.id;
+  const userIdFromParams = req.params.id;
+
+  if (req.user.role === "admin" || userIdFromToken == userIdFromParams) {
+    return next();
+  }
+
+  return res.status(403).json({
+    success: false,
+    message: "Accès refusé",
+  });
+};
