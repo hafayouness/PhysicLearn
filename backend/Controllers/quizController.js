@@ -1,4 +1,4 @@
-import { Quiz, Course } from "../Models/index.js";
+import { Quiz, Course, Progress } from "../Models/index.js";
 
 export const getAllQuizzes = async (req, res) => {
   try {
@@ -227,27 +227,27 @@ export const submitQuiz = async (req, res) => {
 
     const scorePercentage = Math.round((score / totalQuestions) * 100);
 
-    // const [progress, created] = await Progress.findOrCreate({
-    //   where: {
-    //     id_user: userId,
-    //     id_quiz: id,
-    //   },
-    //   defaults: {
-    //     score_quiz: scorePercentage,
-    //     reponses,
-    //     nombre_tentatives: 1,
-    //     derniere_tentative: new Date(),
-    //   },
-    // });
+    const [progress, created] = await Progress.findOrCreate({
+      where: {
+        id_user: userId,
+        id_quiz: id,
+      },
+      defaults: {
+        score_quiz: scorePercentage,
+        reponses,
+        nombre_tentatives: 1,
+        derniere_tentative: new Date(),
+      },
+    });
 
-    // if (!created) {
-    //   await progress.update({
-    //     score_quiz: scorePercentage,
-    //     reponses,
-    //     nombre_tentatives: progress.nombre_tentatives + 1,
-    //     derniere_tentative: new Date(),
-    //   });
-    // }
+    if (!created) {
+      await progress.update({
+        score_quiz: scorePercentage,
+        reponses,
+        nombre_tentatives: progress.nombre_tentatives + 1,
+        derniere_tentative: new Date(),
+      });
+    }
 
     res.status(200).json({
       success: true,
