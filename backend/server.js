@@ -6,6 +6,7 @@ import authRoutes from "./Routes/authRoutes.js";
 import userRoutes from "./Routes/userRoutes.js";
 import courseRoutes from "./Routes/courseRoutes.js";
 import lessonRoutes from "./Routes/lessonRoutes.js";
+import quizRoutes from "./Routes/quizRoutes.js";
 dotenv.config();
 
 const app = express();
@@ -29,6 +30,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/courses", courseRoutes);
 app.use("/api/lessons", lessonRoutes);
+app.use("/api/quizzes", quizRoutes);
 
 const PORT = process.env.PORT || 5000;
 
