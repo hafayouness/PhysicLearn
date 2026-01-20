@@ -6,13 +6,21 @@ import {
   ScrollView,
   TouchableOpacity,
   StatusBar,
+  ActivityIndicator,
 } from "react-native";
-import { useAuthStore } from "../../store/authStore";
-import { COLORS } from "../../utils/constants";
+import { useRouter } from "expo-router";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
+import { useAuthStore } from "../../store/authStore";
+import { useCourse } from "../../hooks/useCourses";
+import { COLORS } from "../../utils/constants";
+
 export default function HomeScreen() {
+  const router = useRouter();
   const user = useAuthStore((state) => state.user);
+
+  const { getAll } = useCourse();
+  const { data: courses, isLoading } = getAll;
 
   const getRoleEmoji = (role: string) => {
     switch (role) {
@@ -27,36 +35,22 @@ export default function HomeScreen() {
     }
   };
 
-  const courses = [
-    {
-      id: "1",
-      title: "Mécanique",
-      icon: "car-brake-abs",
-      color: "#FF6B6B",
-      lessons: 12,
-    },
-    {
-      id: "2",
-      title: "Électricité",
-      icon: "flash",
-      color: "#4ECDC4",
-      lessons: 10,
-    },
-    {
-      id: "3",
-      title: "Optique",
-      icon: "eye",
-      color: "#FFD93D",
-      lessons: 8,
-    },
-    {
-      id: "4",
-      title: "Thermodynamique",
-      icon: "fire",
-      color: "#FF6F3C",
-      lessons: 9,
-    },
-  ];
+  const courseStyleByCategorie = (categorie: string) => {
+    switch (categorie) {
+      case "Mécanique":
+        return { icon: "car-brake-abs", color: "#FF6B6B" };
+      case "Électricité":
+        return { icon: "flash", color: "#4ECDC4" };
+      case "Optique":
+        return { icon: "eye", color: "#FFD93D" };
+      case "Thermodynamique":
+        return { icon: "fire", color: "#FF6F3C" };
+      case "Électromagnétisme":
+        return { icon: "magnet", color: "#EF4444" };
+      default:
+        return { icon: "book-open-variant", color: "#3B82F6" };
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -71,13 +65,14 @@ export default function HomeScreen() {
           </Text>
           <Text style={styles.userRole}>{user?.role}</Text>
         </View>
+
         <View style={styles.headerIcon}>
           <MaterialCommunityIcons name="bell" size={24} color={COLORS.white} />
         </View>
       </View>
 
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
-        {/* Stats Cards */}
+        {/* Stats */}
         <View style={styles.statsContainer}>
           <View style={[styles.statCard, { backgroundColor: "#FF6B6B" }]}>
             <MaterialCommunityIcons
@@ -85,7 +80,7 @@ export default function HomeScreen() {
               size={30}
               color="#FFF"
             />
-            <Text style={styles.statNumber}>24</Text>
+            <Text style={styles.statNumber}>{courses?.length || 0}</Text>
             <Text style={styles.statLabel}>Cours</Text>
           </View>
 
@@ -95,20 +90,21 @@ export default function HomeScreen() {
               size={30}
               color="#FFF"
             />
-            <Text style={styles.statNumber}>12</Text>
+            <Text style={styles.statNumber}>0</Text>
             <Text style={styles.statLabel}>Complétés</Text>
           </View>
 
           <View style={[styles.statCard, { backgroundColor: "#FFD93D" }]}>
             <MaterialCommunityIcons name="trophy" size={30} color="#FFF" />
-            <Text style={styles.statNumber}>85%</Text>
+            <Text style={styles.statNumber}>0%</Text>
             <Text style={styles.statLabel}>Score</Text>
           </View>
         </View>
 
-        {/* Quick Actions */}
+        {/* Quick actions */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Actions rapides</Text>
+
           <View style={styles.actionsGrid}>
             <TouchableOpacity style={styles.actionCard}>
               <View style={[styles.actionIcon, { backgroundColor: "#E8F5E9" }]}>
@@ -160,38 +156,52 @@ export default function HomeScreen() {
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
             <Text style={styles.sectionTitle}>Mes cours</Text>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={() => router.push("/(app)/courses")}>
               <Text style={styles.seeAll}>Voir tout</Text>
             </TouchableOpacity>
           </View>
 
-          {courses.map((course) => (
-            <TouchableOpacity key={course.id} style={styles.courseCard}>
-              <View
-                style={[
-                  styles.courseIcon,
-                  { backgroundColor: course.color + "20" },
-                ]}
+          {isLoading && <ActivityIndicator style={{ marginTop: 10 }} />}
+
+          {courses?.map((course) => {
+            const { icon, color } = courseStyleByCategorie(course.categorie);
+
+            return (
+              <TouchableOpacity
+                key={course.id}
+                style={styles.courseCard}
+                onPress={() =>
+                  router.push({
+                    pathname: "/(app)/course/[id]",
+                    params: { id: String(course.id) },
+                  })
+                }
               >
+                <View
+                  style={[styles.courseIcon, { backgroundColor: color + "20" }]}
+                >
+                  <MaterialCommunityIcons
+                    name={icon as any}
+                    size={32}
+                    color={color}
+                  />
+                </View>
+
+                <View style={styles.courseInfo}>
+                  <Text style={styles.courseTitle}>{course.titre}</Text>
+                  {/* <Text style={styles.courseLessons}>
+                    {course.lessons?.length || 0} leçons disponibles
+                  </Text> */}
+                </View>
+
                 <MaterialCommunityIcons
-                  name={course.icon as any}
-                  size={32}
-                  color={course.color}
+                  name="chevron-right"
+                  size={24}
+                  color="#90A4AE"
                 />
-              </View>
-              <View style={styles.courseInfo}>
-                <Text style={styles.courseTitle}>{course.title}</Text>
-                <Text style={styles.courseLessons}>
-                  {course.lessons} leçons disponibles
-                </Text>
-              </View>
-              <MaterialCommunityIcons
-                name="chevron-right"
-                size={24}
-                color="#90A4AE"
-              />
-            </TouchableOpacity>
-          ))}
+              </TouchableOpacity>
+            );
+          })}
         </View>
       </ScrollView>
     </View>

@@ -1,22 +1,7 @@
-import axios from "axios";
-import { API_URL } from "../utils/constants";
+import api, { setAuthToken } from "./api";
 import { AuthResponse, LoginData, RegisterData } from "../types/user";
 
-const api = axios.create({
-  baseURL: API_URL,
-  timeout: 10000,
-  headers: {
-    "Content-Type": "application/json",
-  },
-});
-
-export const setAuthToken = (token: string | null) => {
-  if (token) {
-    api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-  } else {
-    delete api.defaults.headers.common["Authorization"];
-  }
-};
+export { setAuthToken };
 
 export const authService = {
   register: async (data: RegisterData): Promise<AuthResponse> => {
@@ -26,6 +11,7 @@ export const authService = {
 
   login: async (data: LoginData): Promise<AuthResponse> => {
     const response = await api.post<AuthResponse>("/auth/login", data);
+    console.log("API /auth/login response 👉", response.data);
     return response.data;
   },
 
@@ -38,5 +24,3 @@ export const authService = {
     return response.data;
   },
 };
-
-export default api;

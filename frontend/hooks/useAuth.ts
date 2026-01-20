@@ -1,4 +1,3 @@
-// hooks/useAuth.ts
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { authService, setAuthToken } from "../services/authService";
 import { useAuthStore } from "../store/authStore";
@@ -18,9 +17,13 @@ export const useAuth = () => {
 
   const registerMutation = useMutation<AuthResponse, ApiError, RegisterData>({
     mutationFn: authService.register,
-    onSuccess: (data) => {
-      setAuth(data.user, data.token);
-      setAuthToken(data.token);
+    onSuccess: (response) => {
+      const token = response.data.token;
+      const user = response.data.user;
+
+      setAuth(user, token);
+      setAuthToken(token);
+
       Alert.alert("Succès", "Compte créé avec succès !");
       router.push("/(auth)/login");
     },
@@ -34,9 +37,13 @@ export const useAuth = () => {
 
   const loginMutation = useMutation<AuthResponse, ApiError, LoginData>({
     mutationFn: authService.login,
-    onSuccess: (data) => {
-      setAuth(data.user, data.token);
-      setAuthToken(data.token);
+    onSuccess: (response) => {
+      const token = response.data.token;
+      const user = response.data.user;
+
+      setAuth(user, token);
+      setAuthToken(token);
+
       router.replace("/(app)/home");
     },
     onError: (error) => {

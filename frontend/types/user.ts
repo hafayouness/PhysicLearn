@@ -1,5 +1,5 @@
 export interface User {
-  id: string;
+  id: number;
   nom: string;
   email: string;
   role: "admin" | "prof" | "etudiant";
@@ -18,9 +18,14 @@ export interface LoginData {
 }
 
 export interface AuthResponse {
-  token: string;
-  user: User;
+  success: boolean;
+  message: string;
+  data: {
+    token: string;
+    user: User;
+  };
 }
+
 export interface AuthState {
   user: User | null;
   token: string | null;
