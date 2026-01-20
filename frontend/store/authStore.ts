@@ -10,15 +10,19 @@ export const useAuthStore = create<AuthState>()(
       token: null,
       isAuthenticated: false,
 
-      setAuth: (user, token) => set({ user, token, isAuthenticated: true }),
+      setAuth: (user: User, token: string) => {
+        console.log("✅ setAuth appelé:", { user, token });
+        set({ user, token, isAuthenticated: true });
+      },
 
-      logout: () => set({ user: null, token: null, isAuthenticated: false }),
+      logout: () => {
+        console.log("🚪 logout appelé");
+        set({ user: null, token: null, isAuthenticated: false });
+      },
     }),
     {
       name: "auth-storage",
       storage: createJSONStorage(() => AsyncStorage),
-    }
-  )
+    },
+  ),
 );
-
-export const authStore = useAuthStore;

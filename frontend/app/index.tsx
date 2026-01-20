@@ -8,7 +8,7 @@ import {
   Dimensions,
 } from "react-native";
 import { useRouter } from "expo-router";
-import { authStore } from "../store/authStore";
+import { useAuthStore } from "../store/authStore";
 import { COLORS } from "../utils/constants";
 
 const { width, height } = Dimensions.get("window");
@@ -44,7 +44,7 @@ const Drop: React.FC<DropProps> = ({ delay }) => {
             useNativeDriver: true,
           }),
         ]),
-      ])
+      ]),
     ).start();
   }, []);
 
@@ -93,7 +93,7 @@ const Bubble: React.FC<BubbleProps> = ({ delay, x }) => {
             useNativeDriver: true,
           }),
         ]),
-      ])
+      ]),
     ).start();
   }, []);
 
@@ -130,7 +130,7 @@ const MoleculeIcon: React.FC = () => {
           duration: 2000,
           useNativeDriver: true,
         }),
-      ])
+      ]),
     ).start();
 
     Animated.loop(
@@ -145,7 +145,7 @@ const MoleculeIcon: React.FC = () => {
           duration: 2500,
           useNativeDriver: true,
         }),
-      ])
+      ]),
     ).start();
 
     Animated.loop(
@@ -153,7 +153,7 @@ const MoleculeIcon: React.FC = () => {
         toValue: 1,
         duration: 15000,
         useNativeDriver: true,
-      })
+      }),
     ).start();
   }, []);
 
@@ -193,7 +193,7 @@ const MoleculeIcon: React.FC = () => {
 const SplashScreen: React.FC = () => {
   const router = useRouter();
 
-  const isAuthenticated = authStore((state) => state.isAuthenticated);
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
 
   const buretteLevel = useRef(new Animated.Value(1)).current;
   const beakerLevel = useRef(new Animated.Value(0)).current;
