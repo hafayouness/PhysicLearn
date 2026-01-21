@@ -8,6 +8,7 @@ import {
 } from "react-native";
 import LessonCard from "../../components/LessonCard";
 import { useLesson } from "../../hooks/useLesson";
+import { router } from "expo-router";
 
 const Lessons = () => {
   const { getAll } = useLesson();
@@ -35,7 +36,11 @@ const Lessons = () => {
       <Text style={styles.header}>Liste des leçons</Text>
 
       {getAll.data?.map((lesson) => (
-        <LessonCard key={lesson.id} lesson={lesson} />
+        <LessonCard
+          key={lesson.id}
+          lesson={lesson}
+          onPress={() => router.push(`/DetailsLesson/[id]`)}
+        />
       ))}
     </ScrollView>
   );

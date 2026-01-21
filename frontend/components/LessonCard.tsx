@@ -1,113 +1,196 @@
 import React from "react";
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Lesson } from "../types/lesson";
-// import { useRouter } from "expo-router";
-import { Ionicons } from "@expo/vector-icons";
+import { COLORS } from "../utils/constants";
 
-type Props = {
+interface LessonCardProps {
   lesson: Lesson;
-};
+  onPress: () => void;
+  isCompleted?: boolean;
+}
 
-const typeConfig = {
-  texte: {
-    label: "Texte",
-    icon: "document-text-outline",
-    color: "#3B82F6",
-  },
-  video: {
-    label: "Vidéo",
-    icon: "play-circle-outline",
-    color: "#EF4444",
-  },
-  pdf: {
-    label: "PDF",
-    icon: "document-outline",
-    color: "#F59E0B",
-  },
-  mixte: {
-    label: "Mixte",
-    icon: "layers-outline",
-    color: "#8B5CF6",
-  },
-};
+export default function LessonCard({
+  lesson,
+  onPress,
+  isCompleted = false,
+}: LessonCardProps) {
+  const getTypeIcon = () => {
+    switch (lesson.type_contenu) {
+      case "video":
+        return "video-outline";
+      case "pdf":
+        return "file-pdf-box";
+      case "mixte":
+        return "folder-multiple-outline";
+      default:
+        return "text-box-outline";
+    }
+  };
 
-const LessonCard: React.FC<Props> = ({ lesson }) => {
-  const type = typeConfig[lesson.type_contenu];
+  const getTypeColor = () => {
+    switch (lesson.type_contenu) {
+      case "video":
+        return "#E53935";
+      case "pdf":
+        return "#FB8C00";
+      case "mixte":
+        return "#8E24AA";
+      default:
+        return COLORS.primary;
+    }
+  };
 
   return (
-    <TouchableOpacity activeOpacity={0.9} style={styles.card}>
-      {/* HEADER */}
-      <View style={styles.header}>
-        <Text style={styles.titre}>{lesson.titre}</Text>
-
-        <View style={[styles.badge, { backgroundColor: type.color }]}>
-          <Ionicons name={type.icon as any} size={14} color="#fff" />
-          <Text style={styles.badgeText}>{type.label}</Text>
-        </View>
+    <TouchableOpacity
+      style={[styles.card, !lesson.actif && styles.inactiveCard]}
+      onPress={onPress}
+      disabled={!lesson.actif}
+    >
+      <View style={[styles.iconContainer, { backgroundColor: getTypeColor() }]}>
+        <MaterialCommunityIcons
+          name={getTypeIcon()}
+          size={28}
+          color={COLORS.white}
+        />
       </View>
 
-      <View style={styles.row}>
-        <Ionicons name="time-outline" size={16} color="#6B7280" />
-        <Text style={styles.info}>{lesson.duree} min</Text>
+      <View style={styles.content}>
+        <View style={styles.header}>
+          <Text style={styles.order}>Leçon {lesson.ordre}</Text>
+          {isCompleted && (
+            <View style={styles.completedBadge}>
+              <MaterialCommunityIcons
+                name="check-circle"
+                size={16}
+                color="#4CAF50"
+              />
+              <Text style={styles.completedText}>Terminée</Text>
+            </View>
+          )}
+        </View>
 
-        <Ionicons
-          name="list-outline"
-          size={16}
-          color="#6B7280"
-          style={{ marginLeft: 16 }}
-        />
-        <Text style={styles.info}>Ordre {lesson.ordre}</Text>
+        <Text style={styles.title} numberOfLines={2}>
+          {lesson.titre}
+        </Text>
+
+        <Text style={styles.contentPreview} numberOfLines={2}>
+          {lesson.contenu}
+        </Text>
+
+        <View style={styles.footer}>
+          <View style={styles.meta}>
+            <MaterialCommunityIcons
+              name="clock-outline"
+              size={14}
+              color="#666"
+            />
+            <Text style={styles.duration}>{lesson.duree} min</Text>
+          </View>
+
+          {lesson.fichiers && lesson.fichiers.length > 0 && (
+            <View style={styles.meta}>
+              <MaterialCommunityIcons
+                name="attachment"
+                size={14}
+                color="#666"
+              />
+              <Text style={styles.filesCount}>{lesson.fichiers.length}</Text>
+            </View>
+          )}
+
+          <MaterialCommunityIcons
+            name="chevron-right"
+            size={20}
+            color={COLORS.primary}
+          />
+        </View>
       </View>
     </TouchableOpacity>
   );
-};
+}
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: "#FFFFFF",
-    borderRadius: 16,
+    flexDirection: "row",
+    backgroundColor: COLORS.white,
+    borderRadius: 12,
     padding: 16,
-    marginBottom: 14,
+    marginBottom: 12,
+    elevation: 2,
     shadowColor: "#000",
-    shadowOpacity: 0.08,
-    shadowRadius: 12,
-    elevation: 4,
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+  },
+  inactiveCard: {
+    opacity: 0.6,
+  },
+  iconContainer: {
+    width: 56,
+    height: 56,
+    borderRadius: 12,
+    justifyContent: "center",
+    alignItems: "center",
+    marginRight: 12,
+  },
+  content: {
+    flex: 1,
   },
   header: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
+    marginBottom: 4,
   },
-  titre: {
-    fontSize: 18,
-    fontWeight: "700",
-    color: "#111827",
-    flex: 1,
-    marginRight: 10,
-  },
-  badge: {
-    flexDirection: "row",
-    alignItems: "center",
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-    borderRadius: 20,
-  },
-  badgeText: {
-    color: "#fff",
+  order: {
     fontSize: 12,
     fontWeight: "600",
-    marginLeft: 6,
+    color: COLORS.primary,
+    textTransform: "uppercase",
   },
-  row: {
+  completedBadge: {
     flexDirection: "row",
     alignItems: "center",
-    marginTop: 14,
+    backgroundColor: "#E8F5E9",
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 6,
+    gap: 4,
   },
-  info: {
-    fontSize: 14,
-    color: "#6B7280",
-    marginLeft: 6,
+  completedText: {
+    fontSize: 11,
+    fontWeight: "600",
+    color: "#4CAF50",
+  },
+  title: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "#333",
+    marginBottom: 6,
+  },
+  contentPreview: {
+    fontSize: 13,
+    color: "#666",
+    lineHeight: 18,
+    marginBottom: 8,
+  },
+  footer: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
+  },
+  meta: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 4,
+  },
+  duration: {
+    fontSize: 12,
+    color: "#666",
+  },
+  filesCount: {
+    fontSize: 12,
+    color: "#666",
   },
 });
-
-export default LessonCard;

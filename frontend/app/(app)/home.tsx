@@ -172,7 +172,7 @@ export default function HomeScreen() {
                 style={styles.courseCard}
                 onPress={() =>
                   router.push({
-                    pathname: "/(app)/course/[id]",
+                    pathname: "/DetailsCourse/[id]",
                     params: { id: String(course.id) },
                   })
                 }
