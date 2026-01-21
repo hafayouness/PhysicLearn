@@ -1,6 +1,6 @@
 export const API_URL = __DEV__
-  ? "http://192.168.8.28:5000/api"
-  : "http://192.168.8.28:5000/api";
+  ? "http://192.168.100.121:5000/api"
+  : "http://192.168.100.121:5000/api";
 
 export const COLORS = {
   primary: "#1E88E5",

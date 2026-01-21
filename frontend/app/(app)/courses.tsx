@@ -32,12 +32,7 @@ export default function CoursesScreen() {
         renderItem={({ item }) => (
           <CourseCard
             course={item}
-            onPress={() =>
-              router.push({
-                pathname: "/(app)/course/[id]",
-                params: { id: String(item.id) },
-              })
-            }
+            onPress={() => router.push(`/DetailsCourse/${item.id}`)}
           />
         )}
         ListEmptyComponent={
