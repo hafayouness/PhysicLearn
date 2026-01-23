@@ -1,7 +1,7 @@
 import Course from "../Models/Course.js";
 import { Op } from "sequelize";
 import { Lesson } from "../Models/index.js";
-// import Quiz from "../Models/Quiz.js";
+import Quiz from "../Models/Quiz.js";
 
 export const getAllCourses = async (req, res) => {
   try {
@@ -36,11 +36,11 @@ export const getAllCourses = async (req, res) => {
           as: "lessons",
           attributes: ["id", "titre", "ordre", "duree"],
         },
-        // {
-        //   model: Quiz,
-        //   as: "quizzes",
-        //   attributes: ["id", "titre", "ordre"],
-        // },
+        {
+          model: Quiz,
+          as: "quizzes",
+          attributes: ["id", "titre", "ordre"],
+        },
       ],
       limit: parseInt(limit),
       offset: parseInt(offset),

@@ -1,5 +1,8 @@
 import { Progress, User, Lesson, Quiz, Course } from "../Models/index.js";
 
+import { Op } from "sequelize";
+import sequelize from "../config/db.js";
+
 export const getUserProgress = async (req, res) => {
   try {
     const userId = req.user.id;

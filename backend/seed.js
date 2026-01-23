@@ -3,11 +3,9 @@ import { seedDatabase, resetDatabase } from "./seeders/seeders.js";
 
 const runSeed = async () => {
   try {
-    // Synchroniser les modèles avec la base de données
     console.log("📊 Synchronisation de la base de données...");
-    await sequelize.sync({ force: true }); // ATTENTION: force: true supprime et recrée les tables
+    await sequelize.sync({ force: true });
 
-    // Lancer le seeding
     const result = await seedDatabase();
 
     console.log(`

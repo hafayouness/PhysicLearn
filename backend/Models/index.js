@@ -2,7 +2,8 @@ import User from "./User.js";
 import Course from "./Course.js";
 import Lesson from "./Lesson.js";
 import Quiz from "./Quiz.js";
-import Progress from "../Models/Progress.js";
+import Progress from "./Progress.js";
+import sequelize from "../config/db.js";
 
 Course.hasMany(Lesson, {
   foreignKey: "id_course",
